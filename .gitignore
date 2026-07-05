@@ -1,0 +1,23 @@
+# OS files
+Thumbs.db
+*.DS_Store
+
+# Descarga files (downloaded temp files)
+*.descarga
+
+# Saved resources from browser
+saved_resource
+saved_resource(1)
+saved_resource(2).html
+saved_resource.html
+saved_resource(1)
+
+# Anchor files
+anchor.html
+
+# Large binary/cache
+tc9512sixr
+
+# Python cache
+__pycache__/
+*.pyc

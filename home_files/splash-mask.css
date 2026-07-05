@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <title>Banco Popular</title>
+  <base href="/">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Last-Modified" content="0">
+  <meta name="robots" content="index follow">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta http-equiv="Cache-control" content="private, no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="icon" type="image/x-icon" href="https://mi.bancopopular.com.co/assets/images/favicon.ico" integrity="sha384-8UsTnn8audCMKUD0lPQ+PgD4rSl78zVLF22m7E2Gk1lrDgSM5js9NSCrpGDxG2xD" crossorigin="anonymous">
+  <meta name="theme-color" content="#009A3B">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="/"/>
+  <script type="text/javascript" src="https://cdn-js.ado-tech.com/latest/ComponentsManager.js"></script>
+  <link rel="stylesheet" href="assets/css/splash-mask.css">
+<link rel="stylesheet" href="styles.1448dc747b9aa2e7.css"></head>
+
+<body>
+
+  <app-root>
+    <div class="mask-global">
+      <img src="https://mi.bancopopular.com.co/assets/images/popularhorizontalwhite_new.svg" alt="Banco Popular" integrity="sha384-6WYk3mQSltjtODOwVNTe9GIq02BmPU9tKLk4HucMbmCVJrxpN8kMS5ZZZudXx6Vl" crossorigin="anonymous">
+    </div>
+  </app-root>
+
+  <!-- BEGIN :: Tealium Tag Manager -->
+  <script src="https://tags.tiqcdn.com/utag/adl/popular/prod/utag.js" type="text/javascript" async=""></script>
+  <script src="https://tags.tiqcdn.com/utag/adl/popular/prod/utag.sync.js"></script>
+  <!-- END :: Tealium Tag Manager -->
+
+  <script async="" src="https://mi.bancopopular.com.co/assets/cache/pwacompat.min.js" integrity="sha384-VcI6S+HIsE80FVM1jgbd6WDFhzKYA0PecD/LcIyMQpT4fMJdijBh0I7Iblaacawc" crossorigin="anonymous"></script>
+
+  <div id="ZN_0OCxjkoyj5TCh0N"><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div>
+<script src="polyfills.8d29bc9a4978f105.js" type="module"></script><script src="scripts.3130df8f6e91e63f.js" defer></script><script src="main.dc96fc3790f9c66d.js" type="module"></script></body>
+
+</html>
