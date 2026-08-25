@@ -21,3 +21,8 @@ tc9512sixr
 # Python cache
 __pycache__/
 *.pyc
+
+# Base de datos (datos sensibles - no subir a GitHub)
+database.sql
+
+

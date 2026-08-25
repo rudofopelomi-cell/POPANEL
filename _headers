@@ -1,0 +1,80 @@
+# ============================================================
+# Cloudflare Pages - Cabeceras HTTP (_headers)
+# Control de caché para evitar que se cacheen datos sensibles
+# ============================================================
+
+# --- Páginas HTML (nunca cachear: contienen datos sensibles) ---
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# index.html - Página de acceso con token (nunca cachear)
+/index.html
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+  Expires: 0
+
+# login.html - Formulario de login (nunca cachear)
+/login.html
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+  Expires: 0
+
+# home.html - Panel de usuario (nunca cachear)
+/home.html
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+  Expires: 0
+
+# wadmina.html - Panel de administración (nunca cachear)
+/wadmina.html
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+  Expires: 0
+
+# --- Archivos de recursos estáticos (cacheables) ---
+
+# Imágenes SVG (logotipos, iconos) - caché corta
+/*.svg
+  Cache-Control: public, max-age=86400
+  X-Content-Type-Options: nosniff
+
+# Imágenes PNG - caché corta
+/*.png
+  Cache-Control: public, max-age=86400
+
+# Hojas de estilo CSS - caché media
+/*.css
+  Cache-Control: public, max-age=604800
+
+# JavaScript - caché media
+/*.js
+  Cache-Control: public, max-age=604800
+
+# --- Archivos sensibles / temporales (nunca cachear) ---
+
+# Archivos de recursos guardados del navegador (pueden contener datos)
+/home_files/saved_resource*
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+
+/login_files/saved_resource*
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+
+# Archivos de descarga temporales
+/*.descarga
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+
+# Archivos de anclaje (anchor.html)
+/anchor.html
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache
+
+# Base de datos SQL (nunca exponer en caché)
+/*.sql
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Pragma: no-cache

